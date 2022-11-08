@@ -17,10 +17,24 @@ public final class NamespacedKeyStorage<T extends Enum<T>> implements Iterable<N
     public NamespacedKeyStorage(Plugin plugin, Class<T> enumType) {
         this.plugin = plugin;
         this.keys = new EnumMap<>(enumType);
+
+        T[] constants = enumType.getEnumConstants();
+        for (T constant : constants) {
+            int len = constant.name().length();
+            if (len >= 256) {
+                throw new IllegalArgumentException(
+                    String.format(
+                        "Enum '%s' has a key of '%s' chars, max is 256.",
+                        enumType.getSimpleName(),
+                        len
+                    )
+                );
+            }
+        }
     }
 
     public NamespacedKey get(T key) {
-        return this.keys.computeIfAbsent(key, k -> new NamespacedKey(this.plugin, k.name().toLowerCase()));
+        return this.keys.computeIfAbsent(key, k -> new NamespacedKey(this.plugin, k.name()));
     }
 
     public boolean contains(T key) {
