@@ -20,7 +20,7 @@ public final class NamespacedKeyStorage<T extends Enum<T>> implements Iterable<N
     }
 
     public NamespacedKey get(T key) {
-        return this.keys.computeIfAbsent(key, k -> new NamespacedKey(this.plugin, k.name()));
+        return this.keys.computeIfAbsent(key, k -> new NamespacedKey(this.plugin, k.name().toLowerCase()));
     }
 
     public boolean contains(T key) {
